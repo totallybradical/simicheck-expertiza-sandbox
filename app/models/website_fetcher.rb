@@ -19,6 +19,7 @@ class WebsiteFetcher
 
   private
   def sanitize(html_string)
+    # https://apidock.com/rails/ActionView/Helpers/SanitizeHelper/strip_tags
     ActionController::Base.helpers.strip_tags(html_string)
   end
 
