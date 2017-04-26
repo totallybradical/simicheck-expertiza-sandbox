@@ -13,7 +13,6 @@ class GoogleDocFetcher
 
   def initialize(params)
     @url = params["url"]
-    puts "Created GoogleDoc, " + @url
   end
 
   def FetchContent
@@ -21,16 +20,20 @@ class GoogleDocFetcher
     if fileId.length >= 0
       # TODO: requires link sharing is enabled, maybe write a validate function
       reqUrl = "https://www.googleapis.com/drive/v3/files/#{fileId}" + "/export?" + "mimeType=text/plain" + "&key="
-      puts reqUrl
 
       url = URI.parse(reqUrl)
       req = Net::HTTP::Get.new(url.to_s)
-      res = Net::HTTP.start(url.host, url.port) {|http|
+      res = Net::HTTP.start(url.host, url.port, :use_ssl => url.scheme == 'https') {|http|
         http.request(req)
       }
 
-      # TODO: check request return code
-      res.body
+      if res.code != "200"
+        puts "Failed request to URL: #{@url}, response: " + res.body
+        ""
+      else
+        res.body
+      end
+
     else
       puts "Couldn't parse Google Docs URL: " + @url
       ""

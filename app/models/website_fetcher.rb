@@ -17,12 +17,18 @@ class WebsiteFetcher
     # http://stackoverflow.com/questions/4581075/how-make-a-http-request-using-ruby-on-rails
     puts "Fetching from website URL: " + @url
     url = URI.parse(@url)
+
     req = Net::HTTP::Get.new(url.to_s)
-    res = Net::HTTP.start(url.host, url.port) {|http|
+    res = Net::HTTP.start(url.host, url.port, :use_ssl => url.scheme == 'https') {|http|
       http.request(req)
     }
-    # TODO: check request return code
-    sanitize(res.body)
+
+    if res.code != "200"
+      puts "Failed request to website content URL: #{@url}, code #{res.code}"
+      ""
+    else
+      sanitize(res.body)
+    end
   end
 
   private
