@@ -18,7 +18,7 @@ class GoogleDocFetcher
   def FetchContent
     fileId = getIdFromUrl(@url)
     if fileId.length >= 0
-      # TODO: requires link sharing is enabled, maybe write a validate function
+      # TODO: requires that permissions on the doc are public, or anyone with the link can view, maybe write a validate function
       reqUrl = "https://www.googleapis.com/drive/v3/files/#{fileId}" + "/export?" + "mimeType=text/plain" + "&key="
 
       url = URI.parse(reqUrl)
