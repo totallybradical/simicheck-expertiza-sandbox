@@ -8,7 +8,7 @@ class GoogleDocFetcher
   end
 
   def SupportsUrl?(url)
-    
+    false
   end
 
   def FetchContent
