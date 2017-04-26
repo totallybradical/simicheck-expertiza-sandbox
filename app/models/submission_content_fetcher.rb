@@ -9,8 +9,15 @@ class SubmissionContentFetcher
       # Go thru CSV file and match, fill in the param hash
       params = { "url" => url } 
 
-      return WebsiteFetcher.new(params)
-    end
+      if GoogleDocFetcher.SupportsUrl?(url)
+        GoogleDocFetcher.new(params)
+      elsif GithubFetcher.SupportsUrl?(url)
+        GithubFetcher.new(params)
+      elsif WebsiteFetcher.SupportsUrl?(url) # leave last as catch-all
+        WebsiteFetcher.new(params)
+      else
+        nil
+      end
 
     # Don't allow this object to be instantiated
     private :new

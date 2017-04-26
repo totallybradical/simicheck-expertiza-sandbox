@@ -1,9 +1,14 @@
 
 class WebsiteFetcher
   require 'net/http'
+  # TODO: mixin the HTTP calls
   
   def initialize(params)
     @url = params["url"]
+  end
+
+  def SupportsUrl?(url)
+    true
   end
 
   def FetchContent
@@ -14,6 +19,7 @@ class WebsiteFetcher
     res = Net::HTTP.start(url.host, url.port) {|http|
       http.request(req)
     }
+    # TODO: check request return code
     sanitize(res.body)
   end
 
