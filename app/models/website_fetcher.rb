@@ -3,12 +3,14 @@ class WebsiteFetcher
   require 'net/http'
   # TODO: mixin the HTTP calls
   
-  def initialize(params)
-    @url = params["url"]
+  class << self
+    def SupportsUrl?(url)
+      true
+    end
   end
 
-  def SupportsUrl?(url)
-    true
+  def initialize(params)
+    @url = params["url"]
   end
 
   def FetchContent

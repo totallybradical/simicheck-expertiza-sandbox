@@ -2,12 +2,14 @@
 class GithubFetcher
   require 'net/http'
   
-  def initialize(params)
-    @url = params["url"]
+  class << self
+    def SupportsUrl?(url)
+      false
+    end
   end
 
-  def SupportsUrl?(url)
-    false
+  def initialize(params)
+    @url = params["url"]
   end
 
   def FetchContent

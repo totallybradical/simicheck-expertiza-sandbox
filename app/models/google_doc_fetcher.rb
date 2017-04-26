@@ -1,25 +1,29 @@
 
 class GoogleDocFetcher
   require 'net/http'
+  # TODO: mixin the HTTP calls
+
+  class << self
+    def SupportsUrl?(url)
+      lowerCaseUrl = url.downcase
+      return ((lowerCaseUrl.include? "drive.google.com") or 
+              (lowerCaseUrl.include? "docs.google.com"))
+    end
+  end
 
   def initialize(params)
     @url = params["url"]
     puts "Created GoogleDoc, " + @url
   end
 
-  def SupportsUrl?(url)
-    false
-  end
-
   def FetchContent
     fileId = getIdFromUrl(@url)
     if fileId.length >= 0
       # TODO: requires link sharing is enabled, maybe write a validate function
-      rawUrl = "https://www.googleapis.com/drive/v3/files/" + fileId + "/export?" 
-                + "mimeType=text/plain"
-                + "key="
+      reqUrl = "https://www.googleapis.com/drive/v3/files/#{fileId}" + "/export?" + "mimeType=text/plain" + "&key="
+      puts reqUrl
 
-      url = URI.parse(rawUrl)
+      url = URI.parse(reqUrl)
       req = Net::HTTP::Get.new(url.to_s)
       res = Net::HTTP.start(url.host, url.port) {|http|
         http.request(req)
@@ -31,26 +35,26 @@ class GoogleDocFetcher
       puts "Couldn't parse Google Docs URL: " + @url
       ""
     end
-
-
-file_id = '1ZdR3L3qP4Bkq8noWLJHSr_iBau0DNT4Kli4SxNc2YEo'
-content = drive_service.export_file(file_id,
-                                    'application/pdf',
-                                    download_dest: StringIO.new)
-https://drive.google.com/open?id=1qnFWXyLR8WmfrK6RvmXgR-IztReRCP7cq7N2GazqLAs
-
   end
 
   private
   def getIdFromUrl(url)
-    idRegex = /id=([a-zA-Z0-9\-\_\+\.\~]+)[\/&]?/
-    if idRegex
-      puts "Found ID as " + idRegex.captures[0] + " in: " + url
-      idRegex.captures[0]
-    else
-      puts "ID not found in: " + url
-      ""
-    end
+    idRegex = /[a-zA-Z0-9\-\_\+\.\~]+/
+    idQueryRegex = /id=(#{idRegex})[\/&]?/
+    idPathRegex = /\/d\/(#{idRegex})\//
+
+    idQueryRegex.match(url) {|m|
+      puts "Found ID as " + m.captures[0] + " in query: " + url
+      return m.captures[0]
+    }
+
+    idPathRegex.match(url) {|m|
+      puts "Found ID as " + m.captures[0] + " in path: " + url
+      return m.captures[0]
+    }
+
+    puts "ID not found in: " + url
+    return ""
   end
 
 end
