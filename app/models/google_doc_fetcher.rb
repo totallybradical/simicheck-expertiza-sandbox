@@ -18,7 +18,7 @@ class GoogleDocFetcher
     fileId = getIdFromUrl(@url)
     if fileId.length >= 0
       # TODO: requires that permissions on the doc are public, or anyone with the link can view, maybe write a validate function
-      reqUrl = "https://www.googleapis.com/drive/v3/files/#{fileId}" + "/export?" + "mimeType=text/plain" + "&key="
+      reqUrl = "https://www.googleapis.com/drive/v3/files/#{fileId}" + "/export?" + "mimeType=text/plain" + "&key=AIzaSyCL29lEEYdaWj-M6_cQRpUeNIJFN_gTrP4"
 
       puts "Fetching Google Doc ID: #{fileId}"
       res = HttpRequest.Get(reqUrl)

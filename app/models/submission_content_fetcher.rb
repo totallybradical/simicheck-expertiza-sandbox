@@ -3,7 +3,7 @@ class SubmissionContentFetcher
   class << self
     def Factory(url)
       # TODO: Go thru CSV file and match, fill in the param hash
-      params = { "url" => url } 
+      params = { "url" => url, "zipfilename" => "tempzip" } # TODO: decide how filename gets down here 
 
       if GoogleDocFetcher.SupportsUrl?(url)
         GoogleDocFetcher.new(params)
