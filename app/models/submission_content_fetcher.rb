@@ -7,10 +7,16 @@ class SubmissionContentFetcher
 
       if GoogleDocFetcher.SupportsUrl?(url)
         GoogleDocFetcher.new(params)
-      elsif GithubFetcher.SupportsUrl?(url)
-        GithubFetcher.new(params)
+
+      elsif GithubArchiveFetcher.SupportsUrl?(url)
+        GithubArchiveFetcher.new(params)
+
+      elsif GithubPullRequestFetcher.SupportsUrl?(url)
+        GithubPullRequestFetcher.new(params)
+
       elsif WebsiteFetcher.SupportsUrl?(url) # leave last as catch-all
         WebsiteFetcher.new(params)
+
       else
         nil
       end

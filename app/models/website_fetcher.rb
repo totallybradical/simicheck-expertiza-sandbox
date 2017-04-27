@@ -1,11 +1,11 @@
 
 class WebsiteFetcher
-  require 'net/http'
-  # TODO: mixin the HTTP calls
+  require 'http_request'
   
   class << self
     def SupportsUrl?(url)
-      true
+      lowerCaseUrl = url.downcase
+      not (lowerCaseUrl.include? "github")
     end
   end
 
@@ -14,20 +14,14 @@ class WebsiteFetcher
   end
 
   def FetchContent
-    # http://stackoverflow.com/questions/4581075/how-make-a-http-request-using-ruby-on-rails
     puts "Fetching from website URL: " + @url
-    url = URI.parse(@url)
+    res = HttpRequest.Get(@url)
 
-    req = Net::HTTP::Get.new(url.to_s)
-    res = Net::HTTP.start(url.host, url.port, :use_ssl => url.scheme == 'https') {|http|
-      http.request(req)
-    }
-
-    if res.code != "200"
+    if res.is_a? Net::HTTPSuccess
+      sanitize(res.body)
+    else
       puts "Failed request to website content URL: #{@url}, code #{res.code}"
       ""
-    else
-      sanitize(res.body)
     end
   end
 
