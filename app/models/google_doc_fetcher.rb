@@ -1,13 +1,12 @@
 
 class GoogleDocFetcher
-  require 'net/http'
-  # TODO: mixin the HTTP calls
+  require 'http_request'
 
   class << self
     def SupportsUrl?(url)
       lowerCaseUrl = url.downcase
-      return ((lowerCaseUrl.include? "drive.google.com") or 
-              (lowerCaseUrl.include? "docs.google.com"))
+      ((lowerCaseUrl.include? "drive.google.com") or
+       (lowerCaseUrl.include? "docs.google.com"))
     end
   end
 
@@ -19,19 +18,16 @@ class GoogleDocFetcher
     fileId = getIdFromUrl(@url)
     if fileId.length >= 0
       # TODO: requires that permissions on the doc are public, or anyone with the link can view, maybe write a validate function
-      reqUrl = "https://www.googleapis.com/drive/v3/files/#{fileId}" + "/export?" + "mimeType=text/plain" + "&key="
+      reqUrl = "https://www.googleapis.com/drive/v3/files/#{fileId}" + "/export?" + "mimeType=text/plain" + "&key=AIzaSyCL29lEEYdaWj-M6_cQRpUeNIJFN_gTrP4"
 
-      url = URI.parse(reqUrl)
-      req = Net::HTTP::Get.new(url.to_s)
-      res = Net::HTTP.start(url.host, url.port, :use_ssl => url.scheme == 'https') {|http|
-        http.request(req)
-      }
+      puts "Fetching Google Doc ID: #{fileId}"
+      res = HttpRequest.Get(reqUrl)
 
-      if res.code != "200"
-        puts "Failed request to URL: #{@url}, response: " + res.body
-        ""
-      else
+      if res.is_a? Net::HTTPSuccess
         res.body
+      else
+        puts "Failed request to Google Doc URL: #{@url}, code #{res.code}"
+        ""
       end
 
     else
