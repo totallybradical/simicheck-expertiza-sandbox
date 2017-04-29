@@ -8,6 +8,7 @@ class WebsiteController < ApplicationController
 
     url = archive
 
+    # This is a comment
     fetcher = SubmissionContentFetcher.Factory(url)
     if fetcher
       @text = fetcher.FetchContent()
