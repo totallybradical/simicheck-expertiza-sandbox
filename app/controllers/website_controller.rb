@@ -6,6 +6,7 @@ class WebsiteController < ApplicationController
     pullReq = "https://patch-diff.githubusercontent.com/raw/totallybradical/expertiza-simicheck-integration/pull/1"
     archive = "https://github.com/totallybradical/simicheck-expertiza-sandbox/archive/master.zip"
 
+    # This is another comment
     url = archive
 
     fetcher = SubmissionContentFetcher.Factory(url)
